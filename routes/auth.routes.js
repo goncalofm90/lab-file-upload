@@ -7,14 +7,18 @@ const saltRounds = 10;
 const User = require('../models/User.model');
 const mongoose = require('mongoose');
 const multer = require('multer');
-const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary').v2;
 const multerStorageCloudinary = require('multer-storage-cloudinary');
-const storage = new multerStorageCloudinary.CloudinaryStorage({
-  cloudinary: cloudinary.v2
-});
-const upload = multer({ storage });
 
 const routeGuard = require('../configs/route-guard.config');
+
+//this saves files remotely
+const storage = new multerStorageCloudinary.CloudinaryStorage({
+  cloudinary: cloudinary
+});
+
+//this uploads the files
+const upload = multer({ storage });
 
 ////////////////////////////////////////////////////////////////////////
 ///////////////////////////// SIGNUP //////////////////////////////////
@@ -24,24 +28,13 @@ const routeGuard = require('../configs/route-guard.config');
 router.get('/signup', (req, res) => res.render('auth/signup'));
 
 // .post() route ==> to process form data
-router.post('/signup', upload.single('avatar'), (req, res, next) => {
-  const url = req.file.path;
+router.post('/signup', upload.single('picture'), (req, res, next) => {
   const { username, email, password } = req.body;
-  console.log(username, email, password);
-  console.log(url);
 
   if (!username || !email || !password) {
     res.render('auth/signup', { errorMessage: 'All fields are mandatory. Please provide your username, email and password.' });
     return;
   }
-
-  //GET POST-FORM
-
-  //CREATE POST (NEEDS FILE UPLOADING)
-
-  //GET POST-DISPLAY
-
-  //GET POST-DETAILS
 
   // make sure passwords are strong:
   const regex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
@@ -60,7 +53,6 @@ router.post('/signup', upload.single('avatar'), (req, res, next) => {
         // username: username
         username,
         email,
-        image: url,
         // passwordHash => this is the key from the User model
         //     ^
         //     |            |--> this is placeholder (how we named returning value from the previous method (.hash()))

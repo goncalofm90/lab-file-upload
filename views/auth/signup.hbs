@@ -10,15 +10,13 @@
     <label for="input-password">Password</label>
     <input type="password" name="password" id="input-password" placeholder="********" />
 
-    <label for="input-password">Upload a profile picture</label>
-    <input type="file" name="avatar" />
+    <label for="input-picture">Password</label>
+    <input type="file" name="picture" id="input-picture" />
 
     <button type="submit">Create account</button>
 
-
-
     {{#if errorMessage}}
-      <p class="error">{{errorMessage}}</p>
+    <p class="error">{{errorMessage}}</p>
     {{/if}}
   </form>
 </div>
